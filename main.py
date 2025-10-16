@@ -23,13 +23,24 @@ engine = GameEngine(WIDTH, HEIGHT)
 def main():
     running = True
     while running:
-        SCREEN.fill(BLACK)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+            
+            if engine.game_over and event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_3:
+                    engine.reset_game(3)
+                elif event.key == pygame.K_5:
+                    engine.reset_game(5)
+                elif event.key == pygame.K_7:
+                    engine.reset_game(7)
+                elif event.key == pygame.K_ESCAPE:
+                    running = False
 
-        engine.handle_input()
-        engine.update()
+        if not engine.game_over:
+            engine.handle_input()
+            engine.update()
+
         engine.render(SCREEN)
 
         pygame.display.flip()

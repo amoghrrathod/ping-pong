@@ -18,12 +18,31 @@ class Ball:
         self.x += self.velocity_x
         self.y += self.velocity_y
 
+        wall_hit = False
         if self.y <= 0 or self.y + self.height >= self.screen_height:
             self.velocity_y *= -1
+            wall_hit = True
+        return wall_hit
 
     def check_collision(self, player, ai):
-        if self.rect().colliderect(player.rect()) or self.rect().colliderect(ai.rect()):
+        ball_rect = self.rect()
+        player_rect = player.rect()
+        ai_rect = ai.rect()
+        hit = False
+
+        # Player paddle collision
+        if self.velocity_x < 0 and ball_rect.colliderect(player_rect):
             self.velocity_x *= -1
+            self.x = player_rect.right
+            hit = True
+
+        # AI paddle collision
+        if self.velocity_x > 0 and ball_rect.colliderect(ai_rect):
+            self.velocity_x *= -1
+            self.x = ai_rect.left - self.width
+            hit = True
+        
+        return hit
 
     def reset(self):
         self.x = self.original_x
